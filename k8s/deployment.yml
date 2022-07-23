@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sidecar-deployment
+  labels:
+    app: sidecar-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sidecar-deployment
+  template:
+    metadata:
+      labels:
+        app: sidecar-deployment
+    spec:
+      containers:
+        - name: sidecar-server
+          image: sidecar-grpc-server
+          ports:
+            - containerPort: 50051
+          imagePullPolicy: Never
+        - name: sidecar-client
+          image: sidecar-grpc-client
+          ports:
+            - containerPort: 50052
+          imagePullPolicy: Never
+---
+# Service definition
+apiVersion: v1
+kind: Service
+metadata:
+  name: sidecar-deployment-service
+  labels:
+    app: sidecar-deployment-service
+spec:
+  selector:
+    app: sidecar-deployment
+  ports:
+    - port: 50052
+      nodePort: 30164
+  type: NodePort

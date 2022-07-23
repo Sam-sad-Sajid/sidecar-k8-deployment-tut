@@ -1,0 +1,19 @@
+services:
+  sidecar-grpc-server:
+    image: sidecar-grpc-server
+    hostname: sidecar-server
+    container_name: sidecar-server
+    networks:
+      - sidecar_network
+  sidecar-grpc-client:
+    image: sidecar-grpc-client
+    hostname: sidecar-client
+    container_name: sidecar-client
+    ports:
+      - "50052:50052"
+    networks:
+      - sidecar_network
+networks:
+  sidecar_network:
+    name: sidecar_network
+    driver: bridge
